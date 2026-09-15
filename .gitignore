@@ -1,0 +1,13 @@
+# 依赖
+node_modules/
+__pycache__/
+*.pyc
+
+# 大文件资料库（不进仓库，见项目内 1_素材文件/ecdict）
+ecdict.csv
+*.mdx
+*.mdd
+
+# 系统
+.DS_Store
+Thumbs.db

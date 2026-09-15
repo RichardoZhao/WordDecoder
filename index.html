@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a5490">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>单词解密 · 词根词缀</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f4f6f9; --card:#fff; --ink:#12324f; --ink2:#5a6b7d;
+  --line:#e2e8f0; --blue:#1a5490; --blue-l:#e8f0f9;
+  --root:#b45309; --root-bg:#fef6e7;
+  --pre:#0e7490;  --pre-bg:#e6f6f9;
+  --suf:#7c3aed;  --suf-bg:#f1ebfd;
+  --rel:#15803d;  --rel-bg:#eaf6ee;
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",
+    "Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink); line-height:1.6;
+  padding:0 0 40px; min-height:100vh;
+}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header{
+  background:linear-gradient(135deg,#1a5490,#2b7fc4);
+  color:#fff;padding:22px 0 26px;margin-bottom:18px;
+  border-radius:0 0 22px 22px;box-shadow:0 4px 18px rgba(26,84,144,.18);
+}
+header h1{font-size:21px;font-weight:600;letter-spacing:.5px}
+header p{font-size:12.5px;opacity:.86;margin-top:5px}
+.search{display:flex;gap:8px;margin-top:15px}
+.search input{
+  flex:1;padding:13px 16px;border:none;border-radius:12px;
+  font-size:16px;outline:none;background:#fff;color:var(--ink);
+  box-shadow:0 2px 10px rgba(0,0,0,.09);
+}
+.search input::placeholder{color:#9aabbd}
+.search button{
+  padding:0 22px;border:none;border-radius:12px;background:#0d3a63;color:#fff;
+  font-size:15px;font-weight:500;cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.14);
+}
+.search button:active{transform:scale(.96)}
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.quick span{
+  font-size:12px;padding:4px 11px;border-radius:20px;
+  background:rgba(255,255,255,.19);color:#fff;cursor:pointer;
+  border:1px solid rgba(255,255,255,.24);
+}
+.quick span:active{background:rgba(255,255,255,.33)}
+.card{
+  background:var(--card);border-radius:16px;padding:18px;
+  margin-bottom:14px;box-shadow:0 2px 12px rgba(18,50,79,.07);
+}
+.word-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  padding-bottom:12px;border-bottom:2px solid var(--line);margin-bottom:15px}
+.word-head .w{font-size:27px;font-weight:700;color:var(--blue);letter-spacing:.3px}
+.badge{font-size:11.5px;padding:3px 9px;border-radius:20px;font-weight:500}
+.badge.小学{background:#fef3c7;color:#92400e}
+.badge.初中{background:#dbeafe;color:#1e40af}
+.badge.高中{background:#dcfce7;color:#166534}
+.badge.split{background:#f1ebfd;color:#6d28d9;font-family:ui-monospace,monospace}
+.sec{margin-bottom:15px}
+.sec:last-child{margin-bottom:0}
+.sec-t{font-size:12px;color:var(--ink2);font-weight:600;letter-spacing:1.2px;
+  margin-bottom:8px;text-transform:uppercase}
+.row{display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border-radius:10px;
+  margin-bottom:7px;font-size:14.5px}
+.row.prefix{background:var(--pre-bg)}
+.row.root{background:var(--root-bg)}
+.row.suffix{background:var(--suf-bg)}
+.row.rel{background:var(--rel-bg)}
+.row .form{font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  min-width:74px;flex-shrink:0}
+.row.prefix .form{color:var(--pre)}
+.row.root .form{color:var(--root)}
+.row.suffix .form{color:var(--suf)}
+.row.rel .form{color:var(--rel)}
+.row .mean{color:var(--ink);flex:1}
+.row .pos{font-size:12px;color:var(--ink2);font-style:italic}
+.none{color:#9aabbd;font-size:13.5px;font-style:italic;padding:4px 2px}
+.chain{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:11px 12px;
+  background:var(--blue-l);border-radius:10px;font-size:14px}
+.chain .n{font-family:ui-monospace,monospace;color:var(--blue);font-weight:600}
+.chain .a{color:#8fa8c0}
+.analysis{font-family:ui-monospace,monospace;font-size:13.5px;
+  background:#f8fafc;padding:10px 12px;border-radius:9px;
+  border-left:3px solid var(--blue);color:#334155;word-break:break-word}
+.hist{display:flex;gap:7px;flex-wrap:wrap}
+.hist span{font-size:13px;padding:5px 13px;border-radius:20px;background:#eef2f7;
+  color:var(--ink2);cursor:pointer;font-family:ui-monospace,monospace}
+.hist span:active{background:#dde5ee}
+.empty{text-align:center;color:var(--ink2);padding:34px 16px;font-size:14px}
+.empty .big{font-size:38px;margin-bottom:10px;opacity:.35}
+footer{text-align:center;color:#9aabbd;font-size:11.5px;margin-top:22px;line-height:1.9}
+.loading{text-align:center;padding:30px;color:var(--ink2);font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>单词解密</h1>
+    <p>看清一个单词是怎么造出来的 · 词根 · 前缀 · 后缀 · 相关变化</p>
+    <div class="search">
+      <input id="q" type="search" placeholder="输入英语单词…" autocomplete="off"
+             autocapitalize="off" spellcheck="false">
+      <button id="go">解密</button>
+    </div>
+    <div class="quick">
+      <span data-w="creative">creative</span>
+      <span data-w="creativity">creativity</span>
+      <span data-w="absorption">absorption</span>
+      <span data-w="internationalization">international…</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="out">
+    <div class="empty">
+      <div class="big">🔍</div>
+      <div>输入一个单词，看它的词根词缀</div>
+      <div style="font-size:12.5px;margin-top:8px;opacity:.7">
+        覆盖小学 / 初中 / 高中教材词汇
+      </div>
+    </div>
+  </div>
+  <div class="card" id="histCard" style="display:none">
+    <div class="sec-t">最近查过</div>
+    <div class="hist" id="hist"></div>
+  </div>
+  <footer>
+    数据来源：李平武《英语词根与单词的说文解字》<br>
+    《英语词缀与英语派生词》· 外语教学与研究出版社
+  </footer>
+</div>
+
+<script src="data/lexicon.js"></script>
+<script src="decode.js"></script>
+<script src="pos_norm.js"></script>
+<script>
+// ==================== 算法（来自 decode.js）====================
+WordDecode.init();
+const decode = WordDecode.decode;
+const esc = s => String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// ==================== 渲染 ====================
+function render(r){
+  if(r.basic || (!r.lexiconEntry && !r.root && !r.suffixes.length && !r.prefix)){
+    return `<div class="card"><div class="word-head"><span class="w">${esc(r.word)}</span></div>
+      <div class="none">这个词没有拉丁/希腊词根可拆。</div>
+      <div style="font-size:13px;color:var(--ink2);margin-top:10px">
+        本工具覆盖的是<b>教材里的派生词</b>（长词、多词缀的词）。像 apple、water 这类基础词本来就是本族语，没有词根可拆。
+      </div></div>`;
+  }
+  let h=`<div class="card"><div class="word-head"><span class="w">${esc(r.word)}</span>`;
+  for(const s of r.syllabus) h+=`<span class="badge ${s}">${s}词汇</span>`;
+  h+='</div>';
+
+  if(r.textbookSplit){
+    h+=`<div class="sec"><div class="sec-t">教材断法</div>
+        <div class="analysis">${esc(r.textbookSplit.join(' | '))}</div></div>`;
+  }
+  var _g = (r.lexiconEntry && r.lexiconEntry.glossCn) || (r.lexiconEntry && r.lexiconEntry.gloss) || '';
+  if(_g){
+    var _pos = (r.lexiconEntry && r.lexiconEntry.pos) || '';
+    var _show = _pos ? (PosNorm.normPos(_pos) + '  ' + PosNorm.markTransitive(_g, _pos)) : _g;
+    h+=`<div class="sec"><div class="sec-t">释义</div>
+        <div style="font-size:15.5px;color:var(--ink);line-height:1.75">${esc(_show.slice(0,200))}</div></div>`;
+  }
+  // 从左至右的构词表达式
+  var _parts = (r.lexiconEntry && r.lexiconEntry.analysis)
+      ? PosNorm.splitOrder(r.lexiconEntry.analysis) : [];
+  h+='<div class="sec"><div class="sec-t">构词分析 · 从左至右</div>';
+  if(_parts.length){
+    h+='<div style="font-family:ui-monospace,monospace;font-size:15px;color:#12324f;'
+      +'background:#eef4fb;padding:11px 13px;border-radius:9px;margin-bottom:10px;'
+      +'word-break:break-word;line-height:1.9">'+esc(PosNorm.toExpression(_parts))+'</div>';
+  }
+  if(r.prefix) h+=`<div class="row prefix"><span class="form">${esc(r.prefix.form)}</span>
+      <span class="mean">前缀 · ${esc(r.prefix.mean||'—')}</span></div>`;
+  if(r.root&&r.root.form){
+    h+=`<div class="row root"><span class="form">${esc(r.root.form)}</span>
+        <span class="mean">词根 · ${esc(r.root.mean||'(词库未收录含义)')}
+        ${r.root.src?`<span class="pos">源：${esc(r.root.src)}</span>`:''}</span></div>`;
+  } else {
+    h+=`<div class="none">无词根 —— ${esc(r.note)}</div>`;
+  }
+  for(const s of r.suffixes){
+    h+=`<div class="row suffix"><span class="form">${esc(s.form)}</span>
+        <span class="mean">后缀 · ${esc(s.mean||'—')} <span class="pos">${esc(PosNorm.normPos(s.pos||''))}</span></span></div>`;
+  }
+  if(!r.prefix&&!r.suffixes.length) h+=`<div class="none">无前缀、无后缀</div>`;
+  h+='</div>';
+
+  if(r.relatives&&r.relatives.length){
+    h+=`<div class="sec"><div class="sec-t">相关变化 · 同一派生链上的近亲</div>`;
+    for(const x of r.relatives){
+      h+=`<div class="row rel"><span class="form">${esc(x.word)}</span>
+          <span class="mean">${esc((x.analysis||'').slice(0,58)||'—')}</span></div>`;
+    }
+    h+=`<div style="font-size:12px;color:var(--ink2);margin-top:6px;line-height:1.6">
+        只列派生方向一致的词。换了后缀的（如 creation、creature）算远亲，不列。</div></div>`;
+  }
+  if(r.chain&&r.chain.length>1){
+    const names=r.chain.map(c=>c.word).filter((v,i,a)=>a.indexOf(v)===i).reverse();
+    h+=`<div class="sec"><div class="sec-t">派生链</div><div class="chain">`;
+    names.forEach((n,i)=>{
+      if(i) h+=`<span class="a">→</span>`;
+      h+=`<span class="n">${esc(n)}</span>`;
+    });
+    h+='</div></div>';
+  }
+  h+='</div>';
+  return h;
+}
+
+// ==================== 交互 ====================
+const out=document.getElementById('out'), q=document.getElementById('q');
+let history=JSON.parse(localStorage.getItem('wd_hist')||'[]');
+function saveHist(w){
+  history=[w,...history.filter(x=>x!==w)].slice(0,12);
+  localStorage.setItem('wd_hist',JSON.stringify(history)); drawHist();
+}
+function drawHist(){
+  const c=document.getElementById('histCard'), h=document.getElementById('hist');
+  if(!history.length){ c.style.display='none'; return; }
+  c.style.display=''; h.innerHTML=history.map(w=>`<span data-w="${esc(w)}">${esc(w)}</span>`).join('');
+  h.querySelectorAll('span').forEach(s=>s.onclick=()=>{ q.value=s.dataset.w; go(); });
+}
+function go(){
+  const w=q.value.trim();
+  if(!w) return;
+  const r=decode(w);
+  out.innerHTML=render(r);
+  if(r.lexiconEntry||r.root) saveHist(r.word);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('go').onclick=go;
+q.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+document.querySelectorAll('.quick span').forEach(s=>s.onclick=()=>{ q.value=s.dataset.w; go(); });
+
+// 支持 ?w=creative 直接查
+const u=new URLSearchParams(location.search);
+if(u.get('w')){ q.value=u.get('w'); go(); } else drawHist();
+
+// Service Worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

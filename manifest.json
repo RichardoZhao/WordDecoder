@@ -1,0 +1,26 @@
+{
+  "name": "单词解密 · 词根词缀",
+  "short_name": "单词解密",
+  "description": "看清一个英语单词是怎么造出来的：词根、前缀、后缀、相关变化。覆盖小学/初中/高中教材词汇。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f9",
+  "theme_color": "#1a5490",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
