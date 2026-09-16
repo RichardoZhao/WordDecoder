@@ -1,5 +1,5 @@
 // 单词解密 · Service Worker
-const CACHE = 'wd-v1';
+const CACHE = 'wd-v2';  // 2026-09-16 内核换成 decode_v4（李平武书判据）
 const ASSETS = ['./', './index.html', './manifest.json',
                 './data/lexicon.js', './icons/icon-192.png', './icons/icon-512.png'];
 

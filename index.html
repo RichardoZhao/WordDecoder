@@ -160,6 +160,11 @@ function render(r){
   let h=`<div class="card"><div class="word-head"><span class="w">${esc(r.word)}</span>`;
   for(const s of r.syllabus) h+=`<span class="badge ${s}">${s}词汇</span>`;
   h+='</div>';
+  if(r.source){
+    h+=`<div class="sec" style="margin-top:0"><div style="font-size:12.5px;color:var(--ink2);
+        background:#f5f7fa;border-radius:8px;padding:8px 11px;line-height:1.6">
+        <b>数据来源：${esc(r.source)}</b>${r.sourceNote?' —— '+esc(r.sourceNote):''}</div></div>`;
+  }
 
   if(r.textbookSplit){
     h+=`<div class="sec"><div class="sec-t">教材断法</div>
@@ -172,14 +177,13 @@ function render(r){
     h+=`<div class="sec"><div class="sec-t">释义</div>
         <div style="font-size:15.5px;color:var(--ink);line-height:1.75">${esc(_show.slice(0,200))}</div></div>`;
   }
-  // 从左至右的构词表达式
-  var _parts = (r.lexiconEntry && r.lexiconEntry.analysis)
-      ? PosNorm.splitOrder(r.lexiconEntry.analysis) : [];
+  // 从左至右的构词表达式（由 decode.js 算法直接给出，与 Python 版逐字一致）
+  var _expr = WordDecode.expression(r);
   h+='<div class="sec"><div class="sec-t">构词分析 · 从左至右</div>';
-  if(_parts.length){
+  if(_expr){
     h+='<div style="font-family:ui-monospace,monospace;font-size:15px;color:#12324f;'
       +'background:#eef4fb;padding:11px 13px;border-radius:9px;margin-bottom:10px;'
-      +'word-break:break-word;line-height:1.9">'+esc(PosNorm.toExpression(_parts))+'</div>';
+      +'word-break:break-word;line-height:1.9">'+esc(_expr)+'</div>';
   }
   if(r.prefix) h+=`<div class="row prefix"><span class="form">${esc(r.prefix.form)}</span>
       <span class="mean">前缀 · ${esc(r.prefix.mean||'—')}</span></div>`;
@@ -207,7 +211,7 @@ function render(r){
         只列派生方向一致的词。换了后缀的（如 creation、creature）算远亲，不列。</div></div>`;
   }
   if(r.chain&&r.chain.length>1){
-    const names=r.chain.map(c=>c.word).filter((v,i,a)=>a.indexOf(v)===i).reverse();
+    const names=r.chain.map(c=>c.word).filter((v,i,a)=>a.indexOf(v)===i);
     h+=`<div class="sec"><div class="sec-t">派生链</div><div class="chain">`;
     names.forEach((n,i)=>{
       if(i) h+=`<span class="a">→</span>`;
