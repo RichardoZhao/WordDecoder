@@ -1,213 +1,236 @@
-# 单词解密 · WordDecoder
+# WordDecoder
 
-> **输入一个英语单词，看清它是怎么造出来的。**
-> 词根 · 前缀 · 后缀 · 相关变化 —— 一个给学生的构词分析工具。
+**Type an English word — see how it was built.**
 
-**当前版本：v0.1** · 可装到手机上（PWA）· 离线可用 · MIT License
+Roots · prefixes · suffixes · related forms. A word-morphology tool for learners.
 
----
+`v0.1` · Installable PWA · Works offline · MIT License
 
-## 它解决什么问题
-
-学英语的人都有这个困境：
-
-```
-背单词 → 记住一个 → 忘了 → 再背 → 再忘
-
-遇到生词 → 查词典 → 知道意思了 → 下次遇到还是不认识
-```
-
-**词典回答的是"这词什么意思"，但它不回答"这词为什么这么拼"。**
-
-知道 `creativity` 是 `create + -ive + -ity` 的学生，
-遇到 `productivity`、`sensibility`、`connectivity` 能**猜**出来 ——
-因为他学会的不是一个词，是**一套拆词的方法**。
-
-**这个工具就是把"拆词"这件事做到最直白。**
+**▶ [Open the app](https://richardozhao.github.io/WordDecoder/)** · [中文说明 README](README.zh-CN.md)
 
 ---
 
-## 效果示例
+## The problem
+
+Every learner hits the same wall:
 
 ```
-输入：creativity
+memorise a word → remember it → forget it → memorise it again → forget it again
+
+meet a new word → look it up → know the meaning → still can't read it next time
+```
+
+**A dictionary tells you *what* a word means. It never tells you *why* it is spelled that way.**
+
+A student who knows `creativity` = `create + -ive + -ity` can **guess** the meaning of
+`productivity`, `sensibility`, `connectivity` — not because they memorised those words,
+but because they learned **a method of taking words apart**.
+
+WordDecoder makes that method as explicit as possible.
+
+---
+
+## What it looks like
+
+```
+Input: creativity
 
 ─────────────────────────────────────────────
-构词分析（从左至右）
+Morphology (left to right)
   create  +  -ive (adj.)  +  -ity (n.)
 
-【词根】 create      创造
-【后缀】 -ive   adj.  有…性质的
-         -ity   n.    性质、状态
+[root]  create       to create
+[suffix] -ive  adj.  having the nature of
+         -ity  n.    state, quality
 
-【相关变化】同一派生链上的近亲
-   creative      creat(e); -ive a.
+[Related forms] neighbours on the same derivational chain
+   creative      creat(e); -ive adj.
    create
 
-派生链：create → creative → creativity
+Derivational chain: create → creative → creativity
 ─────────────────────────────────────────────
 ```
 
-**为什么"相关变化"里没有 creation / creature / creator？**
+**Why aren't `creation` / `creature` / `creator` listed under "Related forms"?**
 
-因为**派生方向不一样**。`creativity` 是沿着 `create → creative → creativity`
-这条链长出来的；而 `creation` 是 `create + -ion`，换了个方向。
+Because they grow in a **different direction**. `creativity` grows along
+`create → creative → creativity`; `creation` is `create + -ion` — a different branch.
 
-同一条链上的词互为**近亲**（学会了能互相推）；
-换了后缀的是**远亲**（得单独记）。工具只列近亲。
+Words on the same chain are **close relatives** (learning one helps you infer the others).
+Words with a different suffix direction are **distant relatives** (each must be learned separately).
+The tool lists close relatives only.
 
 ---
 
-## 其他例子
+## More examples
 
 ```
-absorb      →  ab- (离开)  +  sorb (to suck in 吸收)
-                vt. 吸收…
+absorb       →  ab- (away)  +  sorb (to suck in)
+                vt. to take in…
 
-depend      →  de- (down 下)  +  pend (to hang 悬挂)
-                vi. 取决
+depend       →  de- (down)  +  pend (to hang)
+                vi. to rely on
 
-apple       →  无词根 —— 英语本族基础词，本来就没有词根可拆
+apple        →  no root — a native English word, nothing to decompose
 
 internationalization
-            →  inter- (在…之间) + nation (国家) + -al (adj.) + -ization (…化)
+             →  inter- + nation + -al (adj.) + -ization (n.)
 ```
 
 ---
 
-## 三个用法
+## Three ways to use it
 
-### ① 手机装成 App（推荐）
+### ① Install as a phone app (recommended)
+
+Open **https://richardozhao.github.io/WordDecoder/** in a browser, then:
 
 ```
-浏览器打开 →  https://richardozhao.github.io/WordDecoder/
-
-iPhone ：Safari → 分享 → 添加到主屏幕
-Android：Chrome → 菜单 → 安装应用
+iOS      : Safari → Share → Add to Home Screen
+Android  : Chrome → menu → Install app
 ```
 
-装完是独立图标，打开即用，**支持离线**（词库缓存在本地）。
+It becomes a standalone icon and **works offline** (the lexicon is cached locally).
 
-### ② 电脑直接用
+### ② Use it on a desktop
 
-同一个网址，浏览器打开就能查。
+Same URL — it opens in any browser.
 
-### ③ 本地跑
+### ③ Run it locally
 
 ```bash
 git clone https://github.com/RichardoZhao/WordDecoder.git
 cd WordDecoder
 python3 -m http.server 8899
-# 打开 http://127.0.0.1:8899/
+# open http://127.0.0.1:8899/
 ```
 
-纯静态，无需后端、无需数据库、无需联网。
+Pure static files. No backend, no database, no network calls.
 
 ---
 
-## 词性标注规范
+## Part-of-speech tags
 
-工具里的词性缩写按**教学规范**统一：
+Abbreviations follow a fixed teaching convention:
 
-| 缩写 | 含义 |
+| Tag | Meaning |
 |---|---|
-| `n.` | 名词 |
-| `adj.` | 形容词 |
-| `adv.` | 副词 |
-| `vt.` | 及物动词（**释义后带 `…`，提示需接宾语**） |
-| `vi.` | 不及物动词 |
-| `lv.` | 系动词 |
-| `aux.` | 情态动词 |
-| `prep.` `conj.` `pron.` `num.` | 介词 / 连词 / 代词 / 数词 |
+| `n.` | noun |
+| `adj.` | adjective |
+| `adv.` | adverb |
+| `vt.` | transitive verb (**a trailing `…` marks that an object is expected**) |
+| `vi.` | intransitive verb |
+| `lv.` | linking verb |
+| `aux.` | auxiliary / modal |
+| `prep.` `conj.` `pron.` `num.` | preposition / conjunction / pronoun / numeral |
 
-**及物动词标 `…` 的例子**：
+Example of the `…` convention:
 
 ```
-create      vt.  创造…
-absorb      vt.  吸收…
-depend      vi.  取决        ← 不及物，不标省略号
+create   vt.  to create…
+absorb   vt.  to take in…
+depend   vi.  to rely on      ← intransitive: no ellipsis
 ```
 
 ---
 
-## 数据来源
+## Data sources
 
-| 来源 | 用途 |
+| Source | Used for |
 |---|---|
-| 李平武《英语词根与单词的说文解字》<br>《英语词缀与英语派生词》（外研社 2018） | 词根表（355）、词形分析串（3672 条）、教材断法（561 条） |
-| 人教版高中英语课后单词梳理（6 册） | 高中教材词表（1401 词） |
-| 柯林斯双解词典（MDict） | 词性、**及物性**、中文释义（命中 4002 词） |
-| ECDICT（开源词库） | 备选资料库 |
+| Li Pingwu, 《英语词根与单词的说文解字》 / 《英语词缀与英语派生词》 (FLTRP, 2018) | root list (355), morphology strings (3,672), textbook splits (561) |
+| PEP High-School English vocabulary lists (6 books) | high-school word list (1,401 words) |
+| Collins English-Chinese Dictionary (MDict) | POS, transitivity, Chinese glosses (4,002 words matched) |
+| ECDICT (open-source word list) | fallback reference |
 
 ---
 
-## 覆盖率（诚实说明）
+## Coverage — an honest number
 
 ```
-高中教材 1401 词 → 能讲构词的 555 词（39.6%）
-小学 / 初中     → 当前使用通用词表，覆盖率待提高
+High-school list: 1,401 words → 555 analysable (39.6%)
+Primary / middle school: currently a generic list; coverage to be improved
 ```
 
-**为什么不是 100%？**
+**Why not 100%?**
 
-李平武书讲的是**拉丁/希腊语源的派生词**（`agility = agil + -ity`）。
-而英语里大量**基础词**（`apple`、`water`、`about`）来自古英语本族语，
-**本来就没有词根词缀可拆** —— 这不是工具缺陷，是语言事实。
+Li Pingwu's system describes **Latin/Greek-derived words** (`agility = agil + -ity`).
+A large part of English consists of **native Germanic words** (`apple`, `water`, `about`)
+that simply **have no root or affix to split** — that is a fact of the language, not a defect
+of the tool.
 
-对这类词，工具会明确回复："英语本族基础词，无拉丁/希腊词根可拆"。
+For those words the tool says so plainly: *"a native English base word — no Latin/Greek root to decompose."*
 
-**我认为这比硬编一个词根出来要诚实。**
+**That is more honest than inventing a root.**
 
 ---
 
-## 已知限制（v0.1）
+## Known limitations (v0.1)
 
-1. **音变词不追溯**：`absorb + -tion → absorption`（b→p 音变），
-   工具停在 `absorp`，不自动还原成 `absorb`。英语构词音变规则多，尚未全部实现。
-2. **小学/初中词表**：当前是通用词表，非官方教材版，待补。
-3. **词根含义偶有空缺**：部分词根原书只给语源未给中文释义，工具会用派生链底端词的含义兜底。
-4. **不做语法讲解**：`-ed` / `-ing` / `-s` 只作为后缀标记，不涉及时态语态。
-
----
-
-## 技术说明
-
-```
-index.html        界面（手机优先）
-decode.js         核心算法（派生链，浏览器/Node 通用）
-pos_norm.js       词性规范化 + 从左至右格式化
-data/lexicon.js   词库（约 1.1 MB，gzip 后约 150 KB）
-manifest.json     PWA 清单
-sw.js             Service Worker（离线缓存）
-icons/            应用图标
-```
-
-**算法核心**：从目标词出发逐层剥后缀 → 每层把词干**还原变体**后在词库里验证
-（`creativ` → `creative`）→ 追到词根本身。这条链就是派生链，链上的词互为近亲。
+1. **Sound shifts are not traced back.** `absorb + -tion → absorption` (b→p). The tool stops at
+   `absorp` and does not restore `absorb` automatically. English morphology has many such shifts;
+   not all are implemented yet.
+2. **Primary/middle-school word list** is generic, not an official textbook edition.
+3. **Some roots lack a gloss.** Where the source gives only etymology, the tool falls back to the
+   meaning of the chain's base word.
+4. **No grammar teaching.** `-ed` / `-ing` / `-s` are marked as suffixes only; tense and voice are out of scope.
 
 ---
 
-## 部署到自己的服务器
+## Technical notes
 
-整个目录就是全部内容，纯静态：
+```
+index.html        UI (mobile-first)
+decode.js         core algorithm (derivational chain; browser + Node)
+pos_norm.js       POS normalisation + left-to-right formatting
+data/lexicon.js   lexicon (~1.1 MB, ~150 KB gzipped)
+manifest.json     PWA manifest
+sw.js             service worker (offline cache)
+icons/            app icons
+```
+
+**Algorithm**: starting from the target word, peel suffixes one layer at a time; at each layer,
+try to validate a restored variant of the stem against the lexicon (`creativ` → `creative`);
+recurse until a root is reached. That chain *is* the derivational chain, and its members are close relatives.
+
+---
+
+## Deploy to your own server
+
+The whole directory is the whole app — pure static files:
 
 ```bash
-# 任何静态服务器都行
+# any static server will do
 cp -r WordDecoder /var/www/html/
-# 或
+# or
 python3 -m http.server 80
 ```
 
-README 里没有构建步骤 —— 因为**没有构建步骤**。
+There is no build step in this README because **there is no build step**.
 
 ---
 
-## 免责与致谢
+## Data & Privacy
 
-- 词库结构来自李平武先生著作的解析，**未复制原文内容**，仅用于工具化查询
-- 释义数据取自柯林斯词典
-- 词形分析算法为原创实现
-- License: MIT
+This tool does not collect, store or transmit any user data. It is a pure client-side app:
+queries never leave the browser.
 
-**这是初版。** 覆盖率会继续提高，构词规则会继续完善。
-如果你发现分析错误，欢迎提 Issue —— **准确性对教学工具来说比功能更重要**。
+## Sources & License
+
+- **Code**: MIT — see [LICENSE](./LICENSE).
+- **Data**: root list and morphology strings derive from Li Pingwu's books (analysis only, no verbatim text);
+  glosses come from the Collins dictionary; the word list follows the PEP textbook vocabulary.
+- **Third-party content**: copyright remains with the respective authors and publishers.
+  This repository does not reproduce their text — it only makes the analytical structure queryable.
+  Commercial reuse of the underlying data requires clearance from the rights holders.
+
+## Disclaimer
+
+- Morphological analysis is generated by an algorithm; treat it as a study aid, not an authority.
+- The tool does **not** replace a teacher's or a lexicographer's judgement.
+- Some analyses may be incomplete in v0.1 (see *Known limitations*) — issues and corrections are welcome.
+
+## Feedback
+
+Found a wrong analysis? [Open an issue](https://github.com/RichardoZhao/WordDecoder/issues) —
+**for a teaching tool, accuracy matters more than features.**
